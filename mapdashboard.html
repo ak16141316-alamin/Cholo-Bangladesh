@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cholo Bangladesh - Live Tracking</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        #map { height: 70vh; width: 100%; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="bg-white p-4 shadow-md flex justify-between items-center px-6">
+        <h1 class="text-[#ef233c] font-black text-xl italic">CHOLO BANGLADESH</h1>
+        <div class="w-10 h-10 bg-gray-200 rounded-full overflow-hidden">
+            <img src="https://via.placeholder.com/40" alt="Profile">
+        </div>
+    </div>
+
+    <div class="p-4">
+        <div id="map" class="shadow-lg"></div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 shadow-2xl z-[1000]">
+        <h3 class="text-lg font-bold mb-4">কোথায় যেতে চান?</h3>
+        
+        <div class="space-y-4">
+            <div class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                <input type="text" placeholder="আপনার বর্তমান অবস্থান" class="bg-transparent outline-none w-full text-sm">
+            </div>
+            
+            <div class="flex items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+                <div class="w-3 h-3 bg-[#ef233c] rounded-full mr-3"></div>
+                <input type="text" placeholder="গন্তব্যস্থল লিখুন" class="bg-transparent outline-none w-full text-sm">
+            </div>
+        </div>
+
+        <button class="w-full bg-black text-white py-4 rounded-xl mt-6 font-bold text-lg hover:bg-gray-800 transition">
+            রাইড খুঁজুন
+        </button>
+    </div>
+
+    <script>
+        // ১. ম্যাপ ইনিশিয়ালাইজ করা (ঢাকার লোকেশন ডিফল্ট)
+        var map = L.map('map').setView([23.8103, 90.4125], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // ২. ইউজারের লাইভ লোকেশন ট্র্যাক করা
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+
+                // আগের মার্কার থাকলে রিমুভ করে নতুন পজিশন দেখানো
+                L.marker([lat, lng]).addTo(map)
+                    .bindPopup('আপনি এখানে আছেন')
+                    .openPopup();
+                
+                map.setView([lat, lng], 15);
+            });
+        } else {
+            alert("আপনার ব্রাউজার লোকেশন সাপোর্ট করে না।");
+        }
+    </script>
+</body>
+</html>
